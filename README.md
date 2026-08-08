@@ -13,33 +13,14 @@ The goal of the book is to understand embedded C from the hardware up, progressi
     Embedded-C-In-Practice/
     │
     ├── README.md
-    ├── requirements.md
     │
     ├── chapter_01/
     ├── chapter_02/
     ├── chapter_03/
-    │   ├── blink/
-    │   └── button-blink/
     │
     └── ...
 
 Each project is self-contained.
-
-For example:
-
-    chapter_03/
-    ├── blink/
-    │   ├── Makefile
-    │   ├── linker.ld
-    │   ├── main.c
-    │   └── core/
-    │
-    └── button-blink/
-        ├── Makefile
-        ├── linker.ld
-        ├── main.c
-        ├── drivers/
-        └── core/
 
 ---
 
@@ -254,49 +235,6 @@ A clean rebuild can be performed with:
 
 ---
 
-# Chapter 3
-
-Chapter 3 introduces the first complete bare-metal firmware projects.
-
-## blink
-
-A minimal LED blink application introducing:
-
-- Cortex-M4 startup
-- vector table
-- reset handler
-- linker script
-- GPIO clock enable
-- GPIO configuration
-- direct register access
-- GPIO output control
-
-The application runs directly on the STM32F401RE and blinks the onboard LD2 LED connected to PA5.
-
----
-
-## button-blink
-
-The second project extends the previous example with an onboard user button.
-
-It introduces:
-
-- GPIO input
-- active-low input handling
-- button driver
-- LED driver
-- polling
-- simple debounce
-- edge detection
-
-The application toggles LD2 once for every button press.
-
-The two Chapter 3 projects are intentionally independent. At this stage, common infrastructure is duplicated between projects so that each example can be understood and built in isolation.
-
-A common project infrastructure may be introduced in later chapters as the repository evolves.
-
----
-
 # Reproducibility
 
 The repository is designed to keep the development environment reproducible.
@@ -312,8 +250,6 @@ In particular:
 For source dependencies, the repository version and commit are documented when applicable.
 
 The intention is that the examples remain buildable and understandable even when newer versions of the underlying tools become available.
-
-See [`requirements.md`](requirements.md) for the detailed dependency information.
 
 ---
 
