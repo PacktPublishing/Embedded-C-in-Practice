@@ -255,4 +255,6 @@ The intention is that the examples remain buildable and understandable even when
 
 # License
 
-License information will be added as the repository is finalized.
+This repository is licensed under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Packt.
