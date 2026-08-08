@@ -1,259 +1,93 @@
 # Embedded C in Practice
 
-Source code and projects accompanying the **Embedded C in Practice** book.
+**Writing Maintainable Firmware for Real Embedded Systems**
 
-The repository is organized by chapter. Each chapter contains one or more independent projects that can be built and flashed from the command line.
+This is the code repository for [Embedded C in Practice](), published by Packt.
 
-The goal of the book is to understand embedded C from the hardware up, progressively introducing the concepts and abstractions commonly used in embedded firmware development.
+## What is this book about?
 
----
+Master Embedded C for microcontroller-based systems. Learn to build maintainable and professional firmware through practical, real-world embedded system design, from hardware interaction to production-ready architectures.
 
-## Repository structure
+This book takes a hands-on, system-level approach to Embedded C firmware development, focusing on how to design maintainable firmware for real microcontroller-based systems.
 
-    Embedded-C-In-Practice/
-    │
-    ├── README.md
-    │
-    ├── chapter_01/
-    ├── chapter_02/
-    ├── chapter_03/
-    │
-    └── ...
+The book covers the complete journey from understanding how C code executes on a microcontroller and interacts with hardware, to designing modular drivers and production-oriented firmware architectures.
 
-Each project is self-contained.
+Key topics include:
 
----
+* Understand how Embedded C code executes on microcontrollers
+* Design maintainable firmware projects
+* Apply Embedded C language features effectively
+* Implement hardware control through registers and peripherals
+* Design reusable and modular drivers
+* Develop interrupt-driven and timer-based firmware
+* Debug, test and validate firmware on real hardware
+* Build reliable and production-ready embedded systems
 
-# Requirements
+## Instructions and Navigations
 
-The examples are developed and tested using:
+All of the code is organized into folders by chapter.
 
-| Component | Version | Purpose |
-|---|---|---|
-| C | C11 | Firmware language |
-| ARM GNU Toolchain | See below | Compilation and linking |
-| GNU Make | System version | Build system |
-| CMSIS-Core | **5.9.0** | ARM Cortex-M4 core support |
-| STM32F4xx CMSIS Device | **2.6.11** | STM32F401 device definitions |
-| STM32CubeProgrammer | **2.23.0** | Flash programming |
-| STM32 HAL | **Not used** | — |
-| STM32CubeMX | **Not required** | — |
-| STM32CubeIDE | **Not required for build** | — |
-
-The development environment used for the book is **macOS**.
-
----
-
-## ARM GNU Toolchain
-
-The firmware is compiled using the ARM GNU Toolchain for bare-metal ARM targets.
-
-Required executables:
-
-    arm-none-eabi-gcc
-    arm-none-eabi-objcopy
-    arm-none-eabi-size
-
-Verify the installation:
-
-    arm-none-eabi-gcc --version
-    arm-none-eabi-objcopy --version
-    arm-none-eabi-size --version
-
-The projects target:
-
-    arm-none-eabi
-    ARM Cortex-M4
-
-The exact ARM GNU Toolchain release used for the book should be recorded in `requirements.md`.
-
----
-
-## GNU Make
-
-GNU Make is used as the build system.
-
-Verify the installation:
-
-    make --version
-
-No IDE-specific project files or build systems are required.
-
----
-
-## CMSIS
-
-The projects use CMSIS for the Cortex-M4 core definitions and STM32F4 device register definitions.
-
-STM32 HAL is intentionally **not used**.
-
-### CMSIS-Core
-
-Version:
-
-    5.9.0
-
-CMSIS-Core provides the ARM Cortex-M4 core headers used by the projects.
-
-### STM32F4xx CMSIS Device
-
-Repository:
-
-    STMicroelectronics/cmsis-device-f4
-
-Version:
-
-    2.6.11
-
-Git tag:
-
-    v2.6.11
-
-Commit:
-
-    0fa0e489e053fa1ca7790bb40b4d76458f64c55d
-
-For the STM32F401RE, the relevant device header is:
-
-    stm32f401xe.h
-
----
-
-# Target hardware
-
-The initial chapters target the:
-
-**ST NUCLEO-F401RE**
-
-Microcontroller:
-
-    STM32F401RE
-
-Main characteristics:
-
-    ARM Cortex-M4
-    512 KB Flash
-    96 KB SRAM
-
-On-board peripherals used by Chapter 3:
-
-    LD2 LED   → PA5
-    B1 USER   → PC13
-
-No external components are required for the Chapter 3 examples.
-
-Programming and debugging are performed through the onboard:
-
-    ST-LINK
-    SWD
-
----
-
-# Development approach
-
-The examples intentionally start from a minimal bare-metal environment.
-
-The initial projects do not use:
-
-- STM32 HAL
-- STM32CubeMX generated code
-- STM32CubeIDE as a build system
-- RTOS
-- vendor middleware
-
-Instead, the projects use:
-
-    C11
-    +
-    ARM GNU Toolchain
-    +
-    CMSIS
-    +
-    custom startup code
-    +
-    custom linker script
-    +
-    GNU Make
-
-This makes the fundamental components of an embedded firmware project explicit and allows the reader to understand what happens underneath higher-level abstractions.
-
----
-
-# Building a project
-
-Enter the directory of the project you want to build.
+Each chapter can contain one or more independent projects. Projects are designed to be built from the command line and, where applicable, flashed directly to the target hardware.
 
 For example:
 
-    cd chapter_03/blink
+```text
+Embedded-C-In-Practice/
+├── README.md
+├── requirements.md
+│
+├── chapter_01/
+├── chapter_02/
+├── chapter_03/
+│   ├── README.md
+│   ├── blink/
+│   └── button-blink/
+│
+└── ...
+```
 
-Then:
+Each project contains the source code and build files required to reproduce the examples.
 
-    make
+## Software and Hardware Requirements
 
-A successful build produces:
+The development environment and dependencies used throughout the book are documented in [`REQUIREMENTS.md`](REQUIREMENTS.md).
 
-    build/
-    ├── blink.elf
-    ├── blink.bin
-    └── blink.map
+The projects use a minimal bare-metal development environment and intentionally avoid vendor HALs when direct hardware access better supports the concepts covered in the book.
 
-The `build/` directory contains generated files and is excluded from version control.
+## Repository Structure
 
----
+Each chapter contains the projects introduced in that part of the book.
 
-# Flashing a project
+Projects are initially kept self-contained so that they can be built and understood independently. As the book progresses, the firmware architecture evolves together with the concepts introduced in each chapter.
 
-Connect the NUCLEO-F401RE through the ST-LINK USB connector.
+For example, Chapter 3 contains:
 
-Verify that the board is detected:
+```text
+chapter_03/
+├── README.md
+├── blink/
+└── button-blink/
+```
 
-    STM32_Programmer_CLI -c port=SWD
+See the README inside each chapter for a brief description of its projects.
 
-Then flash the project:
+## Errata
 
-    make flash
+Errata and corrections will be documented here as they become available.
 
-The firmware is programmed at:
+## Related Resources
 
-    0x08000000
+The book is available on [Amazon]().
 
-STM32CubeProgrammer is used only as the programming interface. It is not part of the firmware build process.
+## About the Author
 
----
+**Leonardo Cavagnis** is a Firmware Engineer with over 10 years of experience in embedded systems development. He currently works at Arduino, contributing to the design and development of embedded hardware and software platforms that make electronics and edge AI more accessible.
 
-# Cleaning a project
+His expertise spans Embedded C programming, microcontroller architecture, and real-world firmware design across industrial, automotive, and consumer applications.
 
-Remove generated build artifacts:
+Alongside his engineering work, he is involved in Developer Relations and contributes to technical communities and educational initiatives focused on sharing practical knowledge in embedded systems.
 
-    make clean
-
-A clean rebuild can be performed with:
-
-    make clean
-    make
-
----
-
-# Reproducibility
-
-The repository is designed to keep the development environment reproducible.
-
-External dependencies are pinned to explicit versions whenever possible.
-
-In particular:
-
-    CMSIS-Core              5.9.0
-    STM32F4xx CMSIS Device  2.6.11
-    STM32CubeProgrammer     2.23.0
-
-For source dependencies, the repository version and commit are documented when applicable.
-
-The intention is that the examples remain buildable and understandable even when newer versions of the underlying tools become available.
-
----
-
-# License
+## License
 
 This repository is licensed under the [MIT License](LICENSE).
 
