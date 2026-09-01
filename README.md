@@ -60,15 +60,6 @@ Each chapter contains the projects introduced in that part of the book.
 
 Projects are initially kept self-contained so that they can be built and understood independently. As the book progresses, the firmware architecture evolves together with the concepts introduced in each chapter.
 
-For example, Chapter 3 contains:
-
-```text
-chapter_03/
-├── README.md
-├── blink/
-└── button-blink/
-```
-
 See the README inside each chapter for a brief description of its projects.
 
 ## Errata
