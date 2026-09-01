@@ -40,8 +40,8 @@ Embedded-C-In-Practice/
 ├── chapter_02/
 ├── chapter_03/
 │   ├── README.md
-│   ├── blink/
-│   └── button-blink/
+│   ├── 01-led/
+│   └── ...
 │
 └── ...
 ```
