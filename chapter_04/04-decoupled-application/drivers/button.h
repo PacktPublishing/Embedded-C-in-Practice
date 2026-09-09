@@ -6,4 +6,4 @@
 void button_init(void);
 bool button_is_pressed(void);
 
-#endif
+#endif // DRIVERS_BUTTON_H

@@ -49,4 +49,4 @@ uart_status_t uart_read(uart_handle_t *uart, uint8_t *data, uint32_t len);
 
 uart_status_t uart_deinit(uart_handle_t *uart);
 
-#endif
+#endif // HAL_UART_H

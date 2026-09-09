@@ -3,4 +3,4 @@
 
 void report_temperature(float temperature);
 
-#endif
+#endif // APP_REPORT_TEMPERATURE_H

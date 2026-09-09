@@ -48,4 +48,4 @@ void gpio_write_pin(gpio_port_t port, uint8_t pin, bool level);
 
 bool gpio_read_pin(gpio_port_t port, uint8_t pin);
 
-#endif
+#endif // HAL_GPIO_H

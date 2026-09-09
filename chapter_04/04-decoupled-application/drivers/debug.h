@@ -1,5 +1,5 @@
-#ifndef APP_DEBUG_H
-#define APP_DEBUG_H
+#ifndef DRIVERS_DEBUG_H
+#define DRIVERS_DEBUG_H
 
 typedef enum
 {
@@ -11,4 +11,4 @@ typedef enum
 void debug_init(void);
 void debug_print(debug_level_t level, const char *message);
 
-#endif
+#endif // DRIVERS_DEBUG_H

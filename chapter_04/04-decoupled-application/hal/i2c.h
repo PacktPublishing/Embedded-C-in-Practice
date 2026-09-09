@@ -36,4 +36,4 @@ i2c_status_t i2c_write_reg(i2c_handle_t *i2c, uint8_t dev_addr,
 i2c_status_t i2c_read_regs(i2c_handle_t *i2c, uint8_t dev_addr,
                            uint8_t reg_addr, uint8_t *buf, uint32_t len);
 
-#endif
+#endif // HAL_I2C_H

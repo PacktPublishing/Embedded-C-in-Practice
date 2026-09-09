@@ -56,12 +56,8 @@ typedef struct
     float humidity;
 } bme280_reading_t;
 
-/* Calibration coefficients, read once from the sensor at bme280_init() and
- * used by the compensation formulas every time bme280_read() is called.
- * The book keeps these out of the text ("several dozen lines of dense
- * integer arithmetic... reproducing them here would fill pages without
- * teaching anything"); they still have to live somewhere for the driver
- * to actually work, so here they are. */
+/* Calibration data read at init and used for compensation in bme280_read().
+ * Kept here because the compensation formulas require it. */
 typedef struct
 {
     uint16_t dig_T1;
@@ -102,4 +98,4 @@ bme280_status_t bme280_configure(bme280_t *dev,
 
 bme280_status_t bme280_read(bme280_t *dev, bme280_reading_t *reading);
 
-#endif
+#endif // DRIVERS_BME280_H

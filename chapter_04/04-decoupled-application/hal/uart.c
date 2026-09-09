@@ -3,14 +3,6 @@
 #include "stm32f4xx.h"
 #include <stddef.h>
 
-/*
- * The book admits this wiring step was skipped in the text ("Handing Two
- * Pins to the I2C Peripheral", the retrofit aside). On a NUCLEO-F401RE,
- * USART2 is the one wired to the ST-LINK virtual COM port, on PA2/PA3,
- * alternate function 7. USART1 and USART3 are included here so the driver
- * is genuinely multi-instance, matching the handle pattern the chapter
- * builds.
- */
 #define UART_AF 7
 
 static USART_TypeDef *get_instance(uart_instance_t instance)
