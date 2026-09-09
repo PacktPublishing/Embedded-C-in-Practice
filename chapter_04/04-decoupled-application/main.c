@@ -1,5 +1,4 @@
 #include "led.h"
-#include "button.h"
 #include "bme280.h"
 #include "debug.h"
 #include "report_temperature.h"
@@ -33,6 +32,8 @@ int main(void)
         }
     }
 
+    debug_print(DEBUG_INFO, "sensor initialized");
+
     bme280_configure(&sensor, &sensor_config);
 
     while (1)
@@ -42,6 +43,10 @@ int main(void)
         if (bme280_read(&sensor, &reading) == BME280_OK)
         {
             report_temperature(reading.temperature);
+        }
+        else
+        {
+            debug_print(DEBUG_ERROR, "reading failed");
         }
 
         delay_seconds();

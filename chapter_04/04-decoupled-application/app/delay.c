@@ -15,7 +15,7 @@ void delay_short(void)
 
 void delay_seconds(void)
 {
-    for (volatile uint32_t i = 0; i < 21000000; i++)
+    for (volatile uint32_t i = 0; i < 2000000; i++)
     {
     }
 }
