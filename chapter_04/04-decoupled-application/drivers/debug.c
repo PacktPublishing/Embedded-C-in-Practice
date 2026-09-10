@@ -2,10 +2,9 @@
 #include "uart.h"
 #include <string.h>
 
-#define DEBUG_UART_PCLK_HZ 16000000
-#define DEBUG_UART_BAUDRATE 115200
-
-static uart_handle_t debug_uart;
+#define DEBUG_UART           UART_2
+#define DEBUG_UART_PCLK_HZ   16000000
+#define DEBUG_UART_BAUDRATE  115200
 
 void debug_init(void)
 {
@@ -16,7 +15,7 @@ void debug_init(void)
         .parity = UART_PARITY_NONE
     };
 
-    uart_init(&debug_uart, UART_2, &debug_config);
+    uart_init(DEBUG_UART, &debug_config);
 }
 
 void debug_print(debug_level_t level, const char *message)
@@ -55,6 +54,6 @@ void debug_print(debug_level_t level, const char *message)
     line[prefix_len + message_len] = '\r';
     line[prefix_len + message_len + 1] = '\n';
 
-    uart_write(&debug_uart, (const uint8_t *)line,
-              (uint32_t)(prefix_len + message_len + 2));
+    uart_write(DEBUG_UART, (const uint8_t *)line,
+               (uint32_t)(prefix_len + message_len + 2));
 }

@@ -24,13 +24,6 @@ typedef struct
     uart_parity_t parity;
 } uart_config_t;
 
-typedef struct
-{
-    uart_instance_t instance;
-    uart_config_t config;
-    bool initialized;
-} uart_handle_t;
-
 typedef enum
 {
     UART_OK = 0,
@@ -39,18 +32,17 @@ typedef enum
     UART_ERROR_TIMEOUT
 } uart_status_t;
 
-uart_status_t uart_init(uart_handle_t *handle,
-                        uart_instance_t instance,
+uart_status_t uart_init(uart_instance_t instance,
                         const uart_config_t *config);
 
-uart_status_t uart_write(uart_handle_t *handle,
+uart_status_t uart_write(uart_instance_t instance,
                          const uint8_t *data,
                          uint32_t len);
 
-uart_status_t uart_read(uart_handle_t *handle,
+uart_status_t uart_read(uart_instance_t instance,
                         uint8_t *data,
                         uint32_t len);
 
-uart_status_t uart_deinit(uart_handle_t *handle);
+uart_status_t uart_deinit(uart_instance_t instance);
 
 #endif /* HAL_UART_H */

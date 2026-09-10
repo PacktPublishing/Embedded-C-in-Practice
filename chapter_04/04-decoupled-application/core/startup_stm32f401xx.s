@@ -43,11 +43,44 @@ g_pfnVectors:
 
 Reset_Handler:
 
+    /* Copy .data from FLASH to RAM */
+    ldr r0, =_sidata
+    ldr r1, =_sdata
+    ldr r2, =_edata
+
+1:
+    cmp r1, r2
+    bge 2f
+
+    ldr r3, [r0]
+    str r3, [r1]
+
+    adds r0, #4
+    adds r1, #4
+
+    b 1b
+
+2:
+    /* Zero-initialize .bss */
+    ldr r1, =_sbss
+    ldr r2, =_ebss
+    movs r3, #0
+
+3:
+    cmp r1, r2
+    bge 4f
+
+    str r3, [r1]
+    adds r1, #4
+
+    b 3b
+
+4:
     bl SystemInit
     bl main
 
-1:
-    b 1b
+5:
+    b 5b
 
 .size Reset_Handler, . - Reset_Handler
 

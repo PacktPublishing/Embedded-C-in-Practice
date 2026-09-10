@@ -33,21 +33,31 @@ SECTIONS
     {
         . = ALIGN(4);
 
+        _sdata = .;
+
         *(.data)
         *(.data*)
 
         . = ALIGN(4);
+
+        _edata = .;
     } > RAM AT > FLASH
+
+    _sidata = LOADADDR(.data);
 
     .bss :
     {
         . = ALIGN(4);
+
+        _sbss = .;
 
         *(.bss)
         *(.bss*)
         *(COMMON)
 
         . = ALIGN(4);
+
+        _ebss = .;
 
         PROVIDE(end = .);
     } > RAM

@@ -1,9 +1,36 @@
 #include "uart.h"
 #include "gpio.h"
 #include "stm32f4xx.h"
+#include <stdbool.h>
 #include <stddef.h>
 
 #define UART_AF 7
+#define UART_TIMEOUT_GUARD 1000000
+
+typedef struct
+{
+    uart_instance_t instance;
+    uart_config_t config;
+    bool initialized;
+} uart_handle_t;
+
+static uart_handle_t uart1_handle;
+static uart_handle_t uart2_handle;
+
+static uart_handle_t *get_handle(uart_instance_t instance)
+{
+    switch (instance)
+    {
+        case UART_1:
+            return &uart1_handle;
+
+        case UART_2:
+            return &uart2_handle;
+
+        default:
+            return NULL;
+    }
+}
 
 static USART_TypeDef *get_instance(uart_instance_t instance)
 {
@@ -56,19 +83,25 @@ static void uart_enable_clock(uart_instance_t instance)
     }
 }
 
-uart_status_t uart_init(uart_handle_t *handle, uart_instance_t instance,
+uart_status_t uart_init(uart_instance_t instance,
                         const uart_config_t *config)
 {
-    if ((handle == NULL) || (config == NULL))
+    if (config == NULL)
     {
         return UART_ERROR_INVALID_ARG;
     }
 
     USART_TypeDef *peripheral = get_instance(instance);
+    uart_handle_t *handle = get_handle(instance);
 
-    if (peripheral == NULL)
+    if ((peripheral == NULL) || (handle == NULL))
     {
         return UART_ERROR_INVALID_ARG;
+    }
+
+    if (handle->initialized)
+    {
+        return UART_OK;
     }
 
     handle->instance = instance;
@@ -99,10 +132,18 @@ uart_status_t uart_init(uart_handle_t *handle, uart_instance_t instance,
     return UART_OK;
 }
 
-uart_status_t uart_write(uart_handle_t *handle, const uint8_t *data,
+uart_status_t uart_write(uart_instance_t instance,
+                         const uint8_t *data,
                          uint32_t len)
 {
-    if ((handle == NULL) || (data == NULL))
+    if (data == NULL)
+    {
+        return UART_ERROR_INVALID_ARG;
+    }
+
+    uart_handle_t *handle = get_handle(instance);
+
+    if (handle == NULL)
     {
         return UART_ERROR_INVALID_ARG;
     }
@@ -112,7 +153,7 @@ uart_status_t uart_write(uart_handle_t *handle, const uint8_t *data,
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(handle->instance);
+    USART_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral == NULL)
     {
@@ -127,7 +168,7 @@ uart_status_t uart_write(uart_handle_t *handle, const uint8_t *data,
         {
             guard++;
 
-            if (guard > 1000000)
+            if (guard > UART_TIMEOUT_GUARD)
             {
                 return UART_ERROR_TIMEOUT;
             }
@@ -139,9 +180,18 @@ uart_status_t uart_write(uart_handle_t *handle, const uint8_t *data,
     return UART_OK;
 }
 
-uart_status_t uart_read(uart_handle_t *handle, uint8_t *data, uint32_t len)
+uart_status_t uart_read(uart_instance_t instance,
+                        uint8_t *data,
+                        uint32_t len)
 {
-    if ((handle == NULL) || (data == NULL))
+    if (data == NULL)
+    {
+        return UART_ERROR_INVALID_ARG;
+    }
+
+    uart_handle_t *handle = get_handle(instance);
+
+    if (handle == NULL)
     {
         return UART_ERROR_INVALID_ARG;
     }
@@ -151,7 +201,7 @@ uart_status_t uart_read(uart_handle_t *handle, uint8_t *data, uint32_t len)
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(handle->instance); 
+    USART_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral == NULL)
     {
@@ -166,7 +216,7 @@ uart_status_t uart_read(uart_handle_t *handle, uint8_t *data, uint32_t len)
         {
             guard++;
 
-            if (guard > 1000000)
+            if (guard > UART_TIMEOUT_GUARD)
             {
                 return UART_ERROR_TIMEOUT;
             }
@@ -178,14 +228,16 @@ uart_status_t uart_read(uart_handle_t *handle, uint8_t *data, uint32_t len)
     return UART_OK;
 }
 
-uart_status_t uart_deinit(uart_handle_t *handle)
+uart_status_t uart_deinit(uart_instance_t instance)
 {
+    uart_handle_t *handle = get_handle(instance);
+
     if (handle == NULL)
     {
         return UART_ERROR_INVALID_ARG;
     }
 
-    USART_TypeDef *peripheral = get_instance(handle->instance);
+    USART_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral != NULL)
     {

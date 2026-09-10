@@ -5,6 +5,35 @@
 
 #define I2C_TIMEOUT_GUARD 100000
 
+typedef struct
+{
+    i2c_instance_t instance;
+    i2c_config_t config;
+    bool initialized;
+} i2c_handle_t;
+
+static i2c_handle_t i2c1_handle;
+static i2c_handle_t i2c2_handle;
+static i2c_handle_t i2c3_handle;
+
+static i2c_handle_t *get_handle(i2c_instance_t instance)
+{
+    switch (instance)
+    {
+        case I2C_1:
+            return &i2c1_handle;
+
+        case I2C_2:
+            return &i2c2_handle;
+
+        case I2C_3:
+            return &i2c3_handle;
+
+        default:
+            return NULL;
+    }
+}
+
 static I2C_TypeDef *get_instance(i2c_instance_t instance)
 {
     switch (instance)
@@ -68,11 +97,10 @@ static void i2c_enable_clock(i2c_instance_t instance)
     }
 }
 
-i2c_status_t i2c_init(i2c_handle_t *handle,
-                      i2c_instance_t instance,
+i2c_status_t i2c_init(i2c_instance_t instance,
                       const i2c_config_t *config)
 {
-    if ((handle == NULL) || (config == NULL))
+    if (config == NULL)
     {
         return I2C_ERROR_INVALID_ARG;
     }
@@ -83,10 +111,16 @@ i2c_status_t i2c_init(i2c_handle_t *handle,
     }
 
     I2C_TypeDef *peripheral = get_instance(instance);
+    i2c_handle_t *handle = get_handle(instance);
 
-    if (peripheral == NULL)
+    if ((peripheral == NULL) || (handle == NULL))
     {
         return I2C_ERROR_INVALID_ARG;
+    }
+
+    if (handle->initialized)
+    {
+        return I2C_OK;
     }
 
     handle->instance = instance;
@@ -178,11 +212,13 @@ static i2c_status_t i2c_wait_btf(I2C_TypeDef *i2c)
     return I2C_OK;
 }
 
-i2c_status_t i2c_write_reg(i2c_handle_t *handle,
+i2c_status_t i2c_write_reg(i2c_instance_t instance,
                            uint8_t dev_addr,
                            uint8_t reg_addr,
                            uint8_t value)
 {
+    i2c_handle_t *handle = get_handle(instance);
+
     if (handle == NULL)
     {
         return I2C_ERROR_INVALID_ARG;
@@ -193,7 +229,7 @@ i2c_status_t i2c_write_reg(i2c_handle_t *handle,
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(handle->instance);
+    I2C_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral == NULL)
     {
@@ -228,13 +264,20 @@ i2c_status_t i2c_write_reg(i2c_handle_t *handle,
     return I2C_OK;
 }
 
-i2c_status_t i2c_read_regs(i2c_handle_t *handle,
+i2c_status_t i2c_read_regs(i2c_instance_t instance,
                            uint8_t dev_addr,
                            uint8_t reg_addr,
                            uint8_t *buf,
                            uint32_t len)
 {
-    if ((handle == NULL) || (buf == NULL) || (len == 0))
+    if ((buf == NULL) || (len == 0))
+    {
+        return I2C_ERROR_INVALID_ARG;
+    }
+
+    i2c_handle_t *handle = get_handle(instance);
+
+    if (handle == NULL)
     {
         return I2C_ERROR_INVALID_ARG;
     }
@@ -244,7 +287,7 @@ i2c_status_t i2c_read_regs(i2c_handle_t *handle,
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(handle->instance);
+    I2C_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral == NULL)
     {
@@ -298,14 +341,16 @@ i2c_status_t i2c_read_regs(i2c_handle_t *handle,
     return I2C_OK;
 }
 
-i2c_status_t i2c_deinit(i2c_handle_t *handle)
+i2c_status_t i2c_deinit(i2c_instance_t instance)
 {
+    i2c_handle_t *handle = get_handle(instance);
+
     if (handle == NULL)
     {
         return I2C_ERROR_INVALID_ARG;
     }
 
-    I2C_TypeDef *peripheral = get_instance(handle->instance);
+    I2C_TypeDef *peripheral = get_instance(instance);
 
     if (peripheral != NULL)
     {

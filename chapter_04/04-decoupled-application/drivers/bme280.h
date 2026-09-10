@@ -84,7 +84,7 @@ typedef struct
 
 typedef struct
 {
-    i2c_handle_t *i2c;
+    i2c_instance_t i2c;
     uint8_t address;
     bme280_config_t config;
     bme280_calibration_t calibration;
