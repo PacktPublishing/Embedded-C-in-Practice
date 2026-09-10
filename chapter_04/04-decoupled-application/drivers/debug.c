@@ -11,7 +11,6 @@ void debug_init(void)
     static const uart_config_t debug_config =
     {
         .baudrate = DEBUG_UART_BAUDRATE,
-        .pclk_hz = DEBUG_UART_PCLK_HZ,
         .parity = UART_PARITY_NONE
     };
 

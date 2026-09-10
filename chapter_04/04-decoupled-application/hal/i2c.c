@@ -4,6 +4,7 @@
 #include <stddef.h>
 
 #define I2C_TIMEOUT_GUARD 100000
+#define APB1_CLOCK_HZ 16000000
 
 typedef struct
 {
@@ -105,7 +106,7 @@ i2c_status_t i2c_init(i2c_instance_t instance,
         return I2C_ERROR_INVALID_ARG;
     }
 
-    if ((config->pclk_hz == 0) || (config->bus_speed_hz == 0))
+    if (config->bus_speed_hz == 0)
     {
         return I2C_ERROR_INVALID_ARG;
     }
@@ -131,10 +132,10 @@ i2c_status_t i2c_init(i2c_instance_t instance,
 
     peripheral->CR1 &= ~I2C_CR1_PE;
 
-    uint32_t pclk_mhz = config->pclk_hz / 1000000U;
+    uint32_t pclk_mhz = APB1_CLOCK_HZ / 1000000U;
 
     peripheral->CR2 = pclk_mhz;
-    peripheral->CCR = config->pclk_hz / (2U * config->bus_speed_hz);
+    peripheral->CCR = APB1_CLOCK_HZ / (2U * config->bus_speed_hz);
     peripheral->TRISE = pclk_mhz + 1;
 
     peripheral->CR1 |= I2C_CR1_PE;

@@ -20,7 +20,6 @@ typedef enum
 typedef struct
 {
     uint32_t baudrate;
-    uint32_t pclk_hz;
     uart_parity_t parity;
 } uart_config_t;
 

@@ -6,6 +6,7 @@
 
 #define UART_AF 7
 #define UART_TIMEOUT_GUARD 1000000
+#define APB1_CLOCK_HZ 16000000
 
 typedef struct
 {
@@ -110,7 +111,7 @@ uart_status_t uart_init(uart_instance_t instance,
     configure_pins(instance);
     uart_enable_clock(instance);
 
-    uint32_t brr = (config->pclk_hz + (config->baudrate / 2)) / config->baudrate;
+    uint32_t brr = (APB1_CLOCK_HZ + (config->baudrate / 2)) / config->baudrate;
     peripheral->BRR = brr;
 
     uint32_t cr1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;

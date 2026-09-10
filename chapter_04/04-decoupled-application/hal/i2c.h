@@ -13,7 +13,6 @@ typedef enum
 
 typedef struct
 {
-    uint32_t pclk_hz;
     uint32_t bus_speed_hz;
 } i2c_config_t;
 

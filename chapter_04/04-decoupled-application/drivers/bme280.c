@@ -101,7 +101,6 @@ bme280_status_t bme280_init(bme280_t *dev, uint8_t address)
 
     static const i2c_config_t i2c_config =
     {
-        .pclk_hz = 16000000,
         .bus_speed_hz = 100000
     };
 
