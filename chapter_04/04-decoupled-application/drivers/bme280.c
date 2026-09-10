@@ -101,7 +101,13 @@ bme280_status_t bme280_init(bme280_t *dev, uint8_t address)
 
     memset(dev, 0, sizeof(*dev));
 
-    if (i2c_init(&sensor_i2c, I2C_1, BME280_I2C_PCLK_MHZ) != I2C_OK)
+    static const i2c_config_t i2c_config =
+    {
+        .pclk_hz = 16000000,
+        .bus_speed_hz = 100000
+    };
+
+    if (i2c_init(&sensor_i2c, I2C_1, &i2c_config) != I2C_OK)
     {
         return BME280_ERROR_BUS;
     }
