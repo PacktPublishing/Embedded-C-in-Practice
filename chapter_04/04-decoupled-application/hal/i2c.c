@@ -97,10 +97,11 @@ i2c_status_t i2c_init(i2c_handle_t *handle,
 
     peripheral->CR1 &= ~I2C_CR1_PE;
 
-    //FIXME: The following calculations for CR2, CCR, and TRISE are placeholders and may need to be adjusted based on the actual I2C timing requirements.
-    peripheral->CR2 = config->pclk_hz;
-    peripheral->CCR = config->pclk_hz * 5;
-    peripheral->TRISE = config->pclk_hz + 1;
+    uint32_t pclk_mhz = config->pclk_hz / 1000000U;
+
+    peripheral->CR2 = pclk_mhz;
+    peripheral->CCR = config->pclk_hz / (2U * config->bus_speed_hz);
+    peripheral->TRISE = pclk_mhz + 1;
 
     peripheral->CR1 |= I2C_CR1_PE;
     peripheral->CR1 |= I2C_CR1_ACK;
