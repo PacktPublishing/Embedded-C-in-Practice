@@ -9,7 +9,7 @@
 
 typedef struct
 {
-    uart_instance_t instance;
+    USART_TypeDef *peripheral;
     uart_config_t config;
     bool initialized;
 } uart_handle_t;
@@ -104,7 +104,7 @@ uart_status_t uart_init(uart_instance_t instance,
         return UART_OK;
     }
 
-    handle->instance = instance;
+    handle->peripheral = peripheral;
     handle->config = *config;
 
     configure_pins(instance);
@@ -143,22 +143,12 @@ uart_status_t uart_write(uart_instance_t instance,
 
     uart_handle_t *handle = get_handle(instance);
 
-    if (handle == NULL)
-    {
-        return UART_ERROR_INVALID_ARG;
-    }
-
-    if (!handle->initialized)
+    if ((handle == NULL) || !handle->initialized)
     {
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral == NULL)
-    {
-        return UART_ERROR_INVALID_ARG;
-    }
+    USART_TypeDef *peripheral = handle->peripheral;
 
     for (uint32_t i = 0; i < len; i++)
     {
@@ -191,22 +181,12 @@ uart_status_t uart_read(uart_instance_t instance,
 
     uart_handle_t *handle = get_handle(instance);
 
-    if (handle == NULL)
-    {
-        return UART_ERROR_INVALID_ARG;
-    }
-
-    if (!handle->initialized)
+    if ((handle == NULL) || !handle->initialized)
     {
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral == NULL)
-    {
-        return UART_ERROR_INVALID_ARG;
-    }
+    USART_TypeDef *peripheral = handle->peripheral;
 
     for (uint32_t i = 0; i < len; i++)
     {
@@ -237,11 +217,9 @@ uart_status_t uart_deinit(uart_instance_t instance)
         return UART_ERROR_INVALID_ARG;
     }
 
-    USART_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral != NULL)
+    if (handle->initialized)
     {
-        peripheral->CR1 = 0;
+        handle->peripheral->CR1 = 0;
     }
 
     handle->initialized = false;

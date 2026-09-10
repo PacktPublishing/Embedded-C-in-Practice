@@ -7,7 +7,7 @@
 
 typedef struct
 {
-    i2c_instance_t instance;
+    I2C_TypeDef *peripheral;
     i2c_config_t config;
     bool initialized;
 } i2c_handle_t;
@@ -123,7 +123,7 @@ i2c_status_t i2c_init(i2c_instance_t instance,
         return I2C_OK;
     }
 
-    handle->instance = instance;
+    handle->peripheral = peripheral;
     handle->config = *config;
 
     configure_pins(instance);
@@ -219,22 +219,12 @@ i2c_status_t i2c_write_reg(i2c_instance_t instance,
 {
     i2c_handle_t *handle = get_handle(instance);
 
-    if (handle == NULL)
-    {
-        return I2C_ERROR_INVALID_ARG;
-    }
-
-    if (!handle->initialized)
+    if ((handle == NULL) || !handle->initialized)
     {
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral == NULL)
-    {
-        return I2C_ERROR_INVALID_ARG;
-    }
+    I2C_TypeDef *peripheral = handle->peripheral;
 
     i2c_status_t status = i2c_start(peripheral, dev_addr, false);
 
@@ -277,22 +267,12 @@ i2c_status_t i2c_read_regs(i2c_instance_t instance,
 
     i2c_handle_t *handle = get_handle(instance);
 
-    if (handle == NULL)
-    {
-        return I2C_ERROR_INVALID_ARG;
-    }
-
-    if (!handle->initialized)
+    if ((handle == NULL) || !handle->initialized)
     {
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral == NULL)
-    {
-        return I2C_ERROR_INVALID_ARG;
-    }
+    I2C_TypeDef *peripheral = handle->peripheral;
 
     i2c_status_t status = i2c_start(peripheral, dev_addr, false);
 
@@ -350,11 +330,9 @@ i2c_status_t i2c_deinit(i2c_instance_t instance)
         return I2C_ERROR_INVALID_ARG;
     }
 
-    I2C_TypeDef *peripheral = get_instance(instance);
-
-    if (peripheral != NULL)
+    if (handle->initialized)
     {
-        peripheral->CR1 &= ~I2C_CR1_PE;
+        handle->peripheral->CR1 &= ~I2C_CR1_PE;
     }
 
     handle->initialized = false;
