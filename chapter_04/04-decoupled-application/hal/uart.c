@@ -56,10 +56,10 @@ static void uart_enable_clock(uart_instance_t instance)
     }
 }
 
-uart_status_t uart_init(uart_handle_t *uart, uart_instance_t instance,
+uart_status_t uart_init(uart_handle_t *handle, uart_instance_t instance,
                         const uart_config_t *config)
 {
-    if ((uart == NULL) || (config == NULL))
+    if ((handle == NULL) || (config == NULL))
     {
         return UART_ERROR_INVALID_ARG;
     }
@@ -71,8 +71,8 @@ uart_status_t uart_init(uart_handle_t *uart, uart_instance_t instance,
         return UART_ERROR_INVALID_ARG;
     }
 
-    uart->instance = instance;
-    uart->config = *config;
+    handle->instance = instance;
+    handle->config = *config;
 
     configure_pins(instance);
     uart_enable_clock(instance);
@@ -94,25 +94,25 @@ uart_status_t uart_init(uart_handle_t *uart, uart_instance_t instance,
 
     peripheral->CR1 = cr1;
 
-    uart->initialized = true;
+    handle->initialized = true;
 
     return UART_OK;
 }
 
-uart_status_t uart_write(uart_handle_t *uart, const uint8_t *data,
+uart_status_t uart_write(uart_handle_t *handle, const uint8_t *data,
                          uint32_t len)
 {
-    if ((uart == NULL) || (data == NULL))
+    if ((handle == NULL) || (data == NULL))
     {
         return UART_ERROR_INVALID_ARG;
     }
 
-    if (!uart->initialized)
+    if (!handle->initialized)
     {
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(uart->instance);
+    USART_TypeDef *peripheral = get_instance(handle->instance);
 
     if (peripheral == NULL)
     {
@@ -139,19 +139,19 @@ uart_status_t uart_write(uart_handle_t *uart, const uint8_t *data,
     return UART_OK;
 }
 
-uart_status_t uart_read(uart_handle_t *uart, uint8_t *data, uint32_t len)
+uart_status_t uart_read(uart_handle_t *handle, uint8_t *data, uint32_t len)
 {
-    if ((uart == NULL) || (data == NULL))
+    if ((handle == NULL) || (data == NULL))
     {
         return UART_ERROR_INVALID_ARG;
     }
 
-    if (!uart->initialized)
+    if (!handle->initialized)
     {
         return UART_ERROR_NOT_INITIALIZED;
     }
 
-    USART_TypeDef *peripheral = get_instance(uart->instance);
+    USART_TypeDef *peripheral = get_instance(handle->instance); 
 
     if (peripheral == NULL)
     {
@@ -178,21 +178,21 @@ uart_status_t uart_read(uart_handle_t *uart, uint8_t *data, uint32_t len)
     return UART_OK;
 }
 
-uart_status_t uart_deinit(uart_handle_t *uart)
+uart_status_t uart_deinit(uart_handle_t *handle)
 {
-    if (uart == NULL)
+    if (handle == NULL)
     {
         return UART_ERROR_INVALID_ARG;
     }
 
-    USART_TypeDef *peripheral = get_instance(uart->instance);
+    USART_TypeDef *peripheral = get_instance(handle->instance);
 
     if (peripheral != NULL)
     {
         peripheral->CR1 = 0;
     }
 
-    uart->initialized = false;
+    handle->initialized = false;
 
     return UART_OK;
 }

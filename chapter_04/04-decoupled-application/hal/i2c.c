@@ -68,10 +68,16 @@ static void i2c_enable_clock(i2c_instance_t instance)
     }
 }
 
-i2c_status_t i2c_init(i2c_handle_t *i2c, i2c_instance_t instance,
-                      uint32_t pclk_mhz)
+i2c_status_t i2c_init(i2c_handle_t *handle,
+                      i2c_instance_t instance,
+                      const i2c_config_t *config)
 {
-    if (i2c == NULL)
+    if ((handle == NULL) || (config == NULL))
+    {
+        return I2C_ERROR_INVALID_ARG;
+    }
+
+    if ((config->pclk_hz == 0) || (config->bus_speed_hz == 0))
     {
         return I2C_ERROR_INVALID_ARG;
     }
@@ -83,22 +89,23 @@ i2c_status_t i2c_init(i2c_handle_t *i2c, i2c_instance_t instance,
         return I2C_ERROR_INVALID_ARG;
     }
 
-    i2c->instance = instance;
-    i2c->pclk_mhz = pclk_mhz;
+    handle->instance = instance;
+    handle->config = *config;
 
     configure_pins(instance);
     i2c_enable_clock(instance);
 
     peripheral->CR1 &= ~I2C_CR1_PE;
 
-    peripheral->CR2 = pclk_mhz;
-    peripheral->CCR = pclk_mhz * 5;
-    peripheral->TRISE = pclk_mhz + 1;
+    //FIXME: The following calculations for CR2, CCR, and TRISE are placeholders and may need to be adjusted based on the actual I2C timing requirements.
+    peripheral->CR2 = config->pclk_hz;
+    peripheral->CCR = config->pclk_hz * 5;
+    peripheral->TRISE = config->pclk_hz + 1;
 
     peripheral->CR1 |= I2C_CR1_PE;
     peripheral->CR1 |= I2C_CR1_ACK;
 
-    i2c->initialized = true;
+    handle->initialized = true;
 
     return I2C_OK;
 }
@@ -170,20 +177,22 @@ static i2c_status_t i2c_wait_btf(I2C_TypeDef *i2c)
     return I2C_OK;
 }
 
-i2c_status_t i2c_write_reg(i2c_handle_t *i2c, uint8_t dev_addr,
-                           uint8_t reg_addr, uint8_t value)
+i2c_status_t i2c_write_reg(i2c_handle_t *handle,
+                           uint8_t dev_addr,
+                           uint8_t reg_addr,
+                           uint8_t value)
 {
-    if (i2c == NULL)
+    if (handle == NULL)
     {
         return I2C_ERROR_INVALID_ARG;
     }
 
-    if (!i2c->initialized)
+    if (!handle->initialized)
     {
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(i2c->instance);
+    I2C_TypeDef *peripheral = get_instance(handle->instance);
 
     if (peripheral == NULL)
     {
@@ -218,20 +227,23 @@ i2c_status_t i2c_write_reg(i2c_handle_t *i2c, uint8_t dev_addr,
     return I2C_OK;
 }
 
-i2c_status_t i2c_read_regs(i2c_handle_t *i2c, uint8_t dev_addr,
-                           uint8_t reg_addr, uint8_t *buf, uint32_t len)
+i2c_status_t i2c_read_regs(i2c_handle_t *handle,
+                           uint8_t dev_addr,
+                           uint8_t reg_addr,
+                           uint8_t *buf,
+                           uint32_t len)
 {
-    if ((i2c == NULL) || (buf == NULL) || (len == 0))
+    if ((handle == NULL) || (buf == NULL) || (len == 0))
     {
         return I2C_ERROR_INVALID_ARG;
     }
 
-    if (!i2c->initialized)
+    if (!handle->initialized)
     {
         return I2C_ERROR_NOT_INITIALIZED;
     }
 
-    I2C_TypeDef *peripheral = get_instance(i2c->instance);
+    I2C_TypeDef *peripheral = get_instance(handle->instance);
 
     if (peripheral == NULL)
     {
@@ -281,6 +293,25 @@ i2c_status_t i2c_read_regs(i2c_handle_t *i2c, uint8_t dev_addr,
 
         buf[i] = (uint8_t)peripheral->DR;
     }
+
+    return I2C_OK;
+}
+
+i2c_status_t i2c_deinit(i2c_handle_t *handle)
+{
+    if (handle == NULL)
+    {
+        return I2C_ERROR_INVALID_ARG;
+    }
+
+    I2C_TypeDef *peripheral = get_instance(handle->instance);
+
+    if (peripheral != NULL)
+    {
+        peripheral->CR1 &= ~I2C_CR1_PE;
+    }
+
+    handle->initialized = false;
 
     return I2C_OK;
 }
