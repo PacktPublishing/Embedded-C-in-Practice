@@ -1,6 +1,6 @@
 #include "led.h"
 #include "bme280.h"
-#include "debug.h"
+#include "log.h"
 #include "report_temperature.h"
 #include "delay.h"
 
@@ -20,11 +20,11 @@ static const bme280_config_t sensor_config =
 int main(void)
 {
     led_init();
-    debug_init();
+    log_init();
 
     if (bme280_init(&sensor, BME280_I2C_ADDR) != BME280_OK)
     {
-        debug_print(DEBUG_ERROR, "sensor not found");
+        log_print(LOG_ERROR, "sensor not found");
         led_set(true);
 
         while (1)
@@ -32,7 +32,7 @@ int main(void)
         }
     }
 
-    debug_print(DEBUG_INFO, "sensor initialized");
+    log_print(LOG_INFO, "sensor initialized");
 
     bme280_configure(&sensor, &sensor_config);
 
@@ -46,7 +46,7 @@ int main(void)
         }
         else
         {
-            debug_print(DEBUG_ERROR, "reading failed");
+            log_print(LOG_ERROR, "reading failed");
         }
 
         delay_seconds();

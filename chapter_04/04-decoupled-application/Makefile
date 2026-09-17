@@ -43,7 +43,7 @@ OBJECTS := \
     $(BUILD_DIR)/main.o \
     $(BUILD_DIR)/app/delay.o \
     $(BUILD_DIR)/app/report_temperature.o \
-    $(BUILD_DIR)/drivers/debug.o \
+    $(BUILD_DIR)/drivers/log.o \
     $(BUILD_DIR)/drivers/bme280.o \
     $(BUILD_DIR)/drivers/button.o \
     $(BUILD_DIR)/drivers/led.o \
@@ -75,7 +75,7 @@ $(BUILD_DIR)/app/report_temperature.o: app/report_temperature.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/drivers/debug.o: drivers/debug.c
+$(BUILD_DIR)/drivers/log.o: drivers/log.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

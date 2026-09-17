@@ -1,5 +1,5 @@
 #include "report_temperature.h"
-#include "debug.h"
+#include "log.h"
 #include <stdio.h>
 
 void report_temperature(float temperature)
@@ -13,5 +13,5 @@ void report_temperature(float temperature)
              "temperature: %d.%02d C",
              whole, decimal);
 
-    debug_print(DEBUG_INFO, message);
+    log_print(LOG_INFO, message);
 }
