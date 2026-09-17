@@ -1,4 +1,4 @@
-TARGET := 04-decoupled-application
+TARGET := 01-hal-gpio
 
 CC      := arm-none-eabi-gcc
 OBJCOPY := arm-none-eabi-objcopy
@@ -41,15 +41,7 @@ LDFLAGS := \
 
 OBJECTS := \
     $(BUILD_DIR)/main.o \
-    $(BUILD_DIR)/app/delay.o \
-    $(BUILD_DIR)/app/report_temperature.o \
-    $(BUILD_DIR)/drivers/log.o \
-    $(BUILD_DIR)/drivers/bme280.o \
-    $(BUILD_DIR)/drivers/button.o \
-    $(BUILD_DIR)/drivers/led.o \
     $(BUILD_DIR)/hal/gpio.o \
-    $(BUILD_DIR)/hal/uart.o \
-    $(BUILD_DIR)/hal/i2c.o \
     $(BUILD_DIR)/core/system_stm32f4xx.o \
     $(BUILD_DIR)/core/startup_stm32f401xx.o
 
@@ -67,39 +59,7 @@ $(BUILD_DIR)/main.o: main.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/app/delay.o: app/delay.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/app/report_temperature.o: app/report_temperature.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/drivers/log.o: drivers/log.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/drivers/bme280.o: drivers/bme280.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/drivers/button.o: drivers/button.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/drivers/led.o: drivers/led.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
 $(BUILD_DIR)/hal/gpio.o: hal/gpio.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/hal/uart.o: hal/uart.c
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BUILD_DIR)/hal/i2c.o: hal/i2c.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

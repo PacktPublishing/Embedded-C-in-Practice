@@ -3,7 +3,6 @@
 #include <string.h>
 
 #define LOG_UART           UART_2
-#define LOG_UART_PCLK_HZ   16000000
 #define LOG_UART_BAUDRATE  115200
 
 void log_init(void)

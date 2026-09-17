@@ -1,4 +1,4 @@
-## Driver Design
+## Driver Design: Stateless vs Stateful
 
 Drivers hide hardware-specific details behind small, purpose-oriented APIs.
 
@@ -6,7 +6,7 @@ Board-specific mappings and fixed peripheral configurations are kept inside
 the corresponding drivers rather than exposed to application code.
 
 Not every driver needs a handle. A handle is useful when the driver must retain
-state associated with a specific device instance. The LED, button, and debug
+state associated with a specific device instance. The LED, button, and log
 modules have only fixed board-specific configuration, so their APIs remain
 stateless. The BME280 driver, instead, retains calibration data, configuration,
 and device information, making a device handle appropriate.
@@ -35,8 +35,6 @@ The rule is simple:
    - `BUTTON_PIN = 13`
    - `BUTTON_ACTIVE_LOW = 1`
 
-4. **Debug** → stateless → no handle
-   - `DEBUG_UART = UART_2`
-   - `DEBUG_UART_PCLK_HZ = 16000000`
-   - `DEBUG_UART_BAUDRATE = 115200`
-   - `DEBUG_LINE_SIZE = 128`
+4. **Log** → stateless → no handle
+   - `LOG_UART = UART_2`
+   - `LOG_UART_BAUDRATE = 115200`
