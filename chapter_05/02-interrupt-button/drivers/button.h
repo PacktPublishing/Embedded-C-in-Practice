@@ -5,5 +5,6 @@
 
 void button_init(void);
 bool button_is_pressed(void);
+void button_enable_interrupt(void);
 
 #endif // DRIVERS_BUTTON_H
