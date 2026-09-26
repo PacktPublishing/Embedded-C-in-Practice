@@ -36,13 +36,12 @@ Embedded-C-In-Practice/
 ├── README.md
 ├── requirements.md
 │
-├── chapter_01/
-├── chapter_02/
 ├── chapter_03/
 │   ├── README.md
 │   ├── 01-led/
 │   └── ...
-│
+├── chapter_04/
+├── chapter_05/
 └── ...
 ```
 
