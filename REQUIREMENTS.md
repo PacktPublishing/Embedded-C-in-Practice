@@ -81,7 +81,7 @@ No additional build system is required.
 
 ## CMSIS
 
-The repository uses CMSIS for ARM Cortex-M core definitions and STM32 device definitions.
+The repository uses CMSIS for ARM Cortex-M core definitions and STM32 device definitions. CMSIS is maintained in a shared location in the repository, and individual projects reference it through symbolic links to avoid duplicating the same files.
 
 ### CMSIS-Core
 
@@ -99,9 +99,7 @@ CMSIS-Core provides the ARM Cortex-M4 core headers and supporting definitions.
 
 Repository:
 
-```text
-https://github.com/STMicroelectronics/cmsis-device-f4
-```
+[STM32F4xx CMSIS Device](https://github.com/STMicroelectronics/cmsis-device-f4)
 
 Version:
 
@@ -149,7 +147,7 @@ STM32_Programmer_CLI -c port=SWD
 
 The examples in this book are developed and tested using the:
 
-**ST NUCLEO-F401RE**
+[ST NUCLEO-F401RE](https://www.st.com/en/evaluation-tools/nucleo-f401re.html)
 
 The board is based on the **STM32F401RE** microcontroller.
 
@@ -168,12 +166,13 @@ project/
 ├── main.c
 ├── drivers/
 └── core/
-    ├── CMSIS/
+    ├── CMSIS -> shared CMSIS copy
     ├── startup_*.s
     └── system_*.c
 ```
 
 The projects intentionally keep their infrastructure self-contained where this improves readability and makes the examples easier to follow.
+CMSIS is shared across projects and referenced through symbolic links to avoid maintaining multiple copies of the same dependency.
 
 ---
 
