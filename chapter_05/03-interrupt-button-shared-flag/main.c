@@ -43,6 +43,7 @@ int main(void)
     {
         if (button_consume_press())
         {
+            log_print(LOG_INFO, "button press");
             led_toggle();
         }
 
