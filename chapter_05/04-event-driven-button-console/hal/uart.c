@@ -209,6 +209,33 @@ uart_status_t uart_read(uart_instance_t instance,
     return UART_OK;
 }
 
+uart_status_t uart_read_byte(uart_instance_t instance, uint8_t *byte)
+{
+    if (byte == NULL)
+    {
+        return UART_ERROR_INVALID_ARG;
+    }
+
+    uart_handle_t *handle = get_handle(instance);
+
+    if ((handle == NULL) || !handle->initialized)
+    {
+        return UART_ERROR_NOT_INITIALIZED;
+    }
+
+    USART_TypeDef *peripheral = handle->peripheral;
+    uint32_t status = peripheral->SR;
+
+    if ((status & (USART_SR_RXNE | USART_SR_ORE)) == 0U)
+    {
+        return UART_NO_DATA;
+    }
+
+    *byte = (uint8_t)peripheral->DR;
+
+    return ((status & USART_SR_RXNE) != 0U) ? UART_OK : UART_NO_DATA;
+}
+
 uart_status_t uart_deinit(uart_instance_t instance)
 {
     uart_handle_t *handle = get_handle(instance);

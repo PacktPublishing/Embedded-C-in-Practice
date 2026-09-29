@@ -23,7 +23,7 @@ void USART2_IRQHandler(void)
 {
     uint8_t byte;
 
-    if (uart_read(CONSOLE_UART, &byte, 1) == UART_OK)
+    if (uart_read_byte(CONSOLE_UART, &byte) == UART_OK)
     {
         const event_t event = { .type = EVENT_UART_RX, .data = byte };
 

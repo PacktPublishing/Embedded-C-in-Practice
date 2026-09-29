@@ -28,7 +28,8 @@ typedef enum
     UART_OK = 0,
     UART_ERROR_INVALID_ARG,
     UART_ERROR_NOT_INITIALIZED,
-    UART_ERROR_TIMEOUT
+    UART_ERROR_TIMEOUT,
+    UART_NO_DATA
 } uart_status_t;
 
 uart_status_t uart_init(uart_instance_t instance,
@@ -41,6 +42,9 @@ uart_status_t uart_write(uart_instance_t instance,
 uart_status_t uart_read(uart_instance_t instance,
                         uint8_t *data,
                         uint32_t len);
+
+uart_status_t uart_read_byte(uart_instance_t instance, 
+                             uint8_t *byte);
 
 uart_status_t uart_enable_rx_interrupt(uart_instance_t instance,
                                        uint8_t priority);
