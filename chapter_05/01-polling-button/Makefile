@@ -29,6 +29,8 @@ CFLAGS := \
     -Icore/CMSIS/Include \
     -Icore/CMSIS/Device/ST/STM32F4xx/Include
 
+CFLAGS += -DBME280_ACCEPT_BMP280=1
+
 LDFLAGS := \
     $(CPU_FLAGS) \
     -Tlinker.ld \

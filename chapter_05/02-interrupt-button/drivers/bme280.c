@@ -1,7 +1,13 @@
 #include "bme280.h"
 #include <string.h>
 
-#define BME280_CHIP_ID       0x58 // 0x60 for BME280
+#define BME280_CHIP_ID 0x60u
+#define BMP280_CHIP_ID 0x58u
+
+#ifndef BME280_ACCEPT_BMP280
+#define BME280_ACCEPT_BMP280 0
+#endif
+
 #define BME280_I2C_PCLK_MHZ  16
 
 #define BME280_REG_ID         0xD0
@@ -17,13 +23,15 @@
 
 static bme280_status_t bme280_write_config_registers(bme280_t *dev)
 {
-    // uint8_t ctrl_hum = (uint8_t)dev->config.humidity_oversampling;
+#if !BME280_ACCEPT_BMP280
+    uint8_t ctrl_hum = (uint8_t)dev->config.humidity_oversampling;
 
-    // if (i2c_write_reg(dev->i2c, dev->address, BME280_REG_CTRL_HUM,
-    //                   ctrl_hum) != I2C_OK)
-    // {
-    //     return BME280_ERROR_BUS;
-    // }
+    if (i2c_write_reg(dev->i2c, dev->address, BME280_REG_CTRL_HUM,
+                      ctrl_hum) != I2C_OK)
+    {
+        return BME280_ERROR_BUS;
+    }
+#endif
 
     uint8_t config = (uint8_t)(dev->config.filter << 2);
 
@@ -49,7 +57,9 @@ static bme280_status_t bme280_write_config_registers(bme280_t *dev)
 static bme280_status_t bme280_read_calibration(bme280_t *dev)
 {
     uint8_t buf1[BME280_REG_CALIB_1_LEN];
-    //uint8_t buf2[BME280_REG_CALIB_2_LEN];
+#if !BME280_ACCEPT_BMP280
+    uint8_t buf2[BME280_REG_CALIB_2_LEN];
+#endif
 
     if (i2c_read_regs(dev->i2c, dev->address, BME280_REG_CALIB_1,
                       buf1, BME280_REG_CALIB_1_LEN) != I2C_OK)
@@ -57,11 +67,13 @@ static bme280_status_t bme280_read_calibration(bme280_t *dev)
         return BME280_ERROR_BUS;
     }
 
-    // if (i2c_read_regs(dev->i2c, dev->address, BME280_REG_CALIB_2,
-    //                   buf2, BME280_REG_CALIB_2_LEN) != I2C_OK)
-    // {
-    //     return BME280_ERROR_BUS;
-    // }
+#if !BME280_ACCEPT_BMP280
+    if (i2c_read_regs(dev->i2c, dev->address, BME280_REG_CALIB_2,
+                      buf2, BME280_REG_CALIB_2_LEN) != I2C_OK)
+    {
+        return BME280_ERROR_BUS;
+    }
+#endif
 
     bme280_calibration_t *c = &dev->calibration;
 
@@ -81,11 +93,13 @@ static bme280_status_t bme280_read_calibration(bme280_t *dev)
 
     c->dig_H1 = buf1[25];
 
-    // c->dig_H2 = (int16_t)(buf2[0] | (buf2[1] << 8));
-    // c->dig_H3 = buf2[2];
-    // c->dig_H4 = (int16_t)((buf2[3] << 4) | (buf2[4] & 0x0F));
-    // c->dig_H5 = (int16_t)((buf2[5] << 4) | (buf2[4] >> 4));
-    // c->dig_H6 = (int8_t)buf2[6];
+#if !BME280_ACCEPT_BMP280
+    c->dig_H2 = (int16_t)(buf2[0] | (buf2[1] << 8));
+    c->dig_H3 = buf2[2];
+    c->dig_H4 = (int16_t)((buf2[3] << 4) | (buf2[4] & 0x0F));
+    c->dig_H5 = (int16_t)((buf2[5] << 4) | (buf2[4] >> 4));
+    c->dig_H6 = (int8_t)buf2[6];
+#endif
 
     return BME280_OK;
 }
@@ -119,7 +133,8 @@ bme280_status_t bme280_init(bme280_t *dev, uint8_t address)
         return BME280_ERROR_BUS;
     }
 
-    if (chip_id != BME280_CHIP_ID)
+    if ((chip_id != BME280_CHIP_ID) &&
+        !(BME280_ACCEPT_BMP280 && (chip_id == BMP280_CHIP_ID)))
     {
         return BME280_ERROR_WRONG_DEVICE;
     }
@@ -257,21 +272,27 @@ bme280_status_t bme280_read(bme280_t *dev, bme280_reading_t *reading)
                             | ((int32_t)raw[4] << 4)
                             | ((int32_t)raw[5] >> 4);
 
-    // int32_t raw_humidity = ((int32_t)raw[6] << 8)
-    //                      | (int32_t)raw[7];
-
+#if !BME280_ACCEPT_BMP280
+    int32_t raw_humidity = ((int32_t)raw[6] << 8)
+                         | (int32_t)raw[7];
+#endif
     int32_t t_fine = 0;
     int32_t temperature = compensate_temperature(&dev->calibration,
                                                   raw_temperature, &t_fine);
     uint32_t pressure = compensate_pressure(&dev->calibration, raw_pressure,
                                             t_fine);
-    // uint32_t humidity = compensate_humidity(&dev->calibration, raw_humidity,
-    //                                         t_fine);
+#if !BME280_ACCEPT_BMP280
+    uint32_t humidity = compensate_humidity(&dev->calibration, raw_humidity,
+                                            t_fine);
+#endif
 
     reading->temperature = (float)temperature / 100.0f;
     reading->pressure = (float)pressure / 256.0f;
-    //reading->humidity = (float)humidity / 1024.0f;
+#if !BME280_ACCEPT_BMP280
+    reading->humidity = (float)humidity / 1024.0f;
+#else
     reading->humidity = 0.0f;
+#endif
 
     return BME280_OK;
 }
