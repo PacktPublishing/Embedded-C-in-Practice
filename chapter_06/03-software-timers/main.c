@@ -52,7 +52,7 @@ static soft_timer_t status_timer = { .interval_ms = STATUS_INTERVAL_MS };
 
 int main(void)
 {
-        led_init();
+    led_init();
     log_init();
     button_init();
     button_enable_interrupt();
