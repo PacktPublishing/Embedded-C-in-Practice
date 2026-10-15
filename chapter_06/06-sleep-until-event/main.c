@@ -10,7 +10,6 @@
 #include "soil_moisture.h"
 #include "fan.h"
 #include "power.h"
-#include "stm32f4xx.h"
 
 #define BME280_I2C_ADDR 0x76
 
@@ -70,9 +69,9 @@ int main(void)
     button_enable_interrupt();
     console_init();
     system_timer_init();
-    power_init();
     soil_moisture_init();
     fan_init();
+    power_init();
 
     if (bme280_init(&sensor, BME280_I2C_ADDR) != BME280_OK)
     {
@@ -119,6 +118,6 @@ int main(void)
             loop_passes = 0u;
         }
 
-        __WFI();
+        power_sleep();
     }
 }
