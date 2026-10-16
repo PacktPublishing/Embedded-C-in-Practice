@@ -3,10 +3,10 @@
 
 void power_manager_init(void)
 {
-    power_ll_init();
+    power_init();
 }
 
 void power_manager_sleep(void)
 {
-    power_ll_sleep();
+    power_sleep();
 }
