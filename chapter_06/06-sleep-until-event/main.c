@@ -71,7 +71,7 @@ int main(void)
     system_timer_init();
     soil_moisture_init();
     fan_init();
-    power_init();
+    power_manager_init();
 
     if (bme280_init(&sensor, BME280_I2C_ADDR) != BME280_OK)
     {
@@ -118,6 +118,6 @@ int main(void)
             loop_passes = 0u;
         }
 
-        power_sleep();
+        power_manager_sleep();
     }
 }

@@ -1,10 +1,7 @@
-
-#ifndef SYSTICK_H
-#define SYSTICK_H
+#ifndef HAL_SYSTICK_H
+#define HAL_SYSTICK_H
 
 #include <stdint.h>
-
-typedef void (*systick_callback_t)(void);
 
 typedef enum
 {
@@ -13,7 +10,6 @@ typedef enum
     SYSTICK_ERROR_CONFIG
 } systick_status_t;
 
-systick_status_t systick_init(uint32_t tick_hz,
-                              systick_callback_t callback);
+systick_status_t systick_init(uint32_t tick_hz);
 
-#endif // SYSTICK_H
+#endif // HAL_SYSTICK_H
