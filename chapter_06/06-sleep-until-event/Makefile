@@ -54,7 +54,7 @@ OBJECTS := \
     $(BUILD_DIR)/drivers/system_timer.o \
 	$(BUILD_DIR)/drivers/soil_moisture.o \
 	$(BUILD_DIR)/drivers/fan.o \
-	$(BUILD_DIR)/drivers/power.o \
+	$(BUILD_DIR)/drivers/power_manager.o \
     $(BUILD_DIR)/hal/gpio.o \
     $(BUILD_DIR)/hal/uart.o \
     $(BUILD_DIR)/hal/i2c.o \
@@ -63,7 +63,7 @@ OBJECTS := \
     $(BUILD_DIR)/hal/timer.o \
 	$(BUILD_DIR)/hal/adc.o \
 	$(BUILD_DIR)/hal/pwm.o \
-	$(BUILD_DIR)/hal/power_ll.o \
+	$(BUILD_DIR)/hal/power.o \
     $(BUILD_DIR)/core/system_stm32f4xx.o \
     $(BUILD_DIR)/core/startup_stm32f401xx.o
 
@@ -125,7 +125,7 @@ $(BUILD_DIR)/drivers/fan.o: drivers/fan.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/drivers/power.o: drivers/power.c
+$(BUILD_DIR)/drivers/power_manager.o: drivers/power_manager.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -161,7 +161,7 @@ $(BUILD_DIR)/hal/pwm.o: hal/pwm.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/hal/power_ll.o: hal/power_ll.c
+$(BUILD_DIR)/hal/power.o: hal/power.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

@@ -1,7 +1,8 @@
+
 #ifndef POWER_H
 #define POWER_H
 
 void power_init(void);
 void power_sleep(void);
 
-#endif
+#endif // POWER_H
