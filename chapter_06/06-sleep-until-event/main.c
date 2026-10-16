@@ -9,7 +9,7 @@
 #include "soft_timer.h"
 #include "soil_moisture.h"
 #include "fan.h"
-#include "power.h"
+#include "power_manager.h"
 
 #define BME280_I2C_ADDR 0x76
 
