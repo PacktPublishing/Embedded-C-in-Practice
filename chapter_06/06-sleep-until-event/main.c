@@ -52,7 +52,7 @@ static void handle_event(event_t event)
     }
     else if (event.type == EVENT_SOIL_SAMPLE_READY)
     {
-        report_soil_moisture(soil_moisture_get_raw());
+        report_soil_moisture((uint16_t)event.data);
     }
 }
 

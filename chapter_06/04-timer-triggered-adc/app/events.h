@@ -13,7 +13,7 @@ typedef enum
 typedef struct
 {
     event_type_t type;
-    uint8_t data;
+    uint32_t data;
 } event_t;
 
 #endif // APP_EVENTS_H
