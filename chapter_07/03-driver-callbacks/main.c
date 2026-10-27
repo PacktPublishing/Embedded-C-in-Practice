@@ -34,7 +34,7 @@ static soft_timer_t report_timer = { .interval_ms = 1000u };
  */
 static void dispatch_limits(void)
 {
-    if (limits_exceeded())
+    if (limits_temperature_high() || limits_probe_high())
     {
         app_fsm_dispatch(INPUT_OVER_THRESHOLD, 0u);
     }

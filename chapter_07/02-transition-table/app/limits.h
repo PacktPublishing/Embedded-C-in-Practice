@@ -7,6 +7,7 @@
 void limits_reset(void);
 void limits_check_temperature(float celsius);
 void limits_check_probe(uint16_t raw);
-bool limits_exceeded(void);
+bool limits_temperature_high(void);
+bool limits_probe_high(void);
 
 #endif // APP_LIMITS_H

@@ -43,7 +43,12 @@ void limits_check_probe(uint16_t raw)
                              PROBE_ENTER_RAW, PROBE_EXIT_RAW);
 }
 
-bool limits_exceeded(void)
+bool limits_temperature_high(void)
 {
-    return temp_high || probe_high;
+    return temp_high;
+}
+
+bool limits_probe_high(void)
+{
+    return probe_high;
 }
