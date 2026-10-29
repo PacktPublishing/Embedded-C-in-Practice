@@ -46,7 +46,7 @@ OBJECTS := \
     $(BUILD_DIR)/app/report.o \
     $(BUILD_DIR)/app/soft_timer.o \
     $(BUILD_DIR)/app/event_queue.o \
-    $(BUILD_DIR)/app/app_fsm.o \
+    $(BUILD_DIR)/app/fsm.o \
     $(BUILD_DIR)/app/limits.o \
     $(BUILD_DIR)/drivers/log.o \
     $(BUILD_DIR)/drivers/bme280.o \
@@ -95,7 +95,7 @@ $(BUILD_DIR)/app/event_queue.o: app/event_queue.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/app/app_fsm.o: app/app_fsm.c
+$(BUILD_DIR)/app/fsm.o: app/fsm.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 

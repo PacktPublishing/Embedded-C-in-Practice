@@ -1,5 +1,5 @@
-#ifndef APP_FSM_H
-#define APP_FSM_H
+#ifndef FSM_H
+#define FSM_H
 
 #include <stdint.h>
 
@@ -7,9 +7,8 @@ typedef enum
 {
     STATE_IDLE,
     STATE_MONITOR,
-    STATE_ALERT,
-    STATE_ANY
-} app_state_t;
+    STATE_ALERT
+} fsm_state_t;
 
 typedef enum
 {
@@ -19,9 +18,9 @@ typedef enum
     INPUT_FAN_SPEED,
     INPUT_OVER_THRESHOLD,
     INPUT_WITHIN_LIMITS
-} app_input_t;
+} fsm_input_t;
 
-void app_fsm_dispatch(app_input_t input, uint32_t data);
-app_state_t app_fsm_state(void);
+void fsm_dispatch(fsm_input_t input, uint32_t data);
+fsm_state_t fsm_state(void);
 
-#endif // APP_FSM_H
+#endif // FSM_H

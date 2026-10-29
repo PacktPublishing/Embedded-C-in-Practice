@@ -1,10 +1,10 @@
-#include "app_fsm.h"
+#include "fsm.h"
 #include "limits.h"
 #include "report.h"
 #include "fan.h"
 #include "log.h"
 
-static app_state_t state = STATE_IDLE;
+static fsm_state_t state = STATE_IDLE;
 
 static void start_monitoring(uint32_t data)
 {
@@ -37,7 +37,7 @@ static void clear_alert(uint32_t data)
     log_print(LOG_INFO, "alert: cleared");
 }
 
-static void set_fan_speed(uint32_t data)
+static void adjust_fan(uint32_t data)
 {
     fan_set_speed((uint8_t)data);
     report_fan_speed((uint8_t)data);
@@ -51,7 +51,7 @@ static void panic_stop(uint32_t data)
     log_print(LOG_WARNING, "panic: stopped");
 }
 
-static void handle_idle(app_input_t input, uint32_t data)
+static void handle_idle(fsm_input_t input, uint32_t data)
 {
     switch (input)
     {
@@ -64,7 +64,7 @@ static void handle_idle(app_input_t input, uint32_t data)
     }
 }
 
-static void handle_monitor(app_input_t input, uint32_t data)
+static void handle_monitor(fsm_input_t input, uint32_t data)
 {
     switch (input)
     {
@@ -81,12 +81,12 @@ static void handle_monitor(app_input_t input, uint32_t data)
     }
 }
 
-static void handle_alert(app_input_t input, uint32_t data)
+static void handle_alert(fsm_input_t input, uint32_t data)
 {
     switch (input)
     {
     case INPUT_FAN_SPEED:
-        set_fan_speed(data);
+        adjust_fan(data);
         break;
     case INPUT_WITHIN_LIMITS:
         clear_alert(data);
@@ -97,7 +97,7 @@ static void handle_alert(app_input_t input, uint32_t data)
     }
 }
 
-void app_fsm_dispatch(app_input_t input, uint32_t data)
+void fsm_dispatch(fsm_input_t input, uint32_t data)
 {
     /* The emergency stop is a global transition: it applies in every
      * state, so it is handled before looking at the current one. */
@@ -124,7 +124,7 @@ void app_fsm_dispatch(app_input_t input, uint32_t data)
     }
 }
 
-app_state_t app_fsm_state(void)
+fsm_state_t fsm_state(void)
 {
     return state;
 }

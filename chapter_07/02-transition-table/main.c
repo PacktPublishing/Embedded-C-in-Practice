@@ -10,7 +10,7 @@
 #include "soil_moisture.h"
 #include "fan.h"
 #include "power_manager.h"
-#include "app_fsm.h"
+#include "fsm.h"
 #include "limits.h"
 
 #define BME280_I2C_ADDR 0x76
@@ -36,11 +36,11 @@ static void dispatch_limits(void)
 {
     if (limits_temperature_high() || limits_probe_high())
     {
-        app_fsm_dispatch(INPUT_OVER_THRESHOLD, 0u);
+        fsm_dispatch(INPUT_OVER_THRESHOLD, 0u);
     }
     else
     {
-        app_fsm_dispatch(INPUT_WITHIN_LIMITS, 0u);
+        fsm_dispatch(INPUT_WITHIN_LIMITS, 0u);
     }
 }
 
@@ -48,21 +48,21 @@ static void handle_command(uint8_t command)
 {
     if (command == 's')
     {
-        app_fsm_dispatch(INPUT_START, 0u);
+        fsm_dispatch(INPUT_START, 0u);
     }
     else if (command == 'e')
     {
-        app_fsm_dispatch(INPUT_STOP, 0u);
+        fsm_dispatch(INPUT_STOP, 0u);
     }
     else if ((command >= '0') && (command <= '9'))
     {
-        app_fsm_dispatch(INPUT_FAN_SPEED, (command - '0') * 10u);
+        fsm_dispatch(INPUT_FAN_SPEED, (command - '0') * 10u);
     }
 }
 
 static void handle_probe_sample(uint16_t sample)
 {
-    if (app_fsm_state() != STATE_IDLE)
+    if (fsm_state() != STATE_IDLE)
     {
         report_soil_moisture(sample);
         limits_check_probe(sample);
@@ -76,7 +76,7 @@ static void handle_event(event_t event)
 {
     if (event.type == EVENT_BUTTON_PRESSED)
     {
-        app_fsm_dispatch(INPUT_BUTTON, 0u);
+        fsm_dispatch(INPUT_BUTTON, 0u);
     }
     else if (event.type == EVENT_UART_RX)
     {
@@ -139,7 +139,7 @@ int main(void)
         }
 
         if (soft_timer_expired(&report_timer, now) &&
-            (app_fsm_state() != STATE_IDLE))
+            (fsm_state() != STATE_IDLE))
         {
             read_temperature();
         }
