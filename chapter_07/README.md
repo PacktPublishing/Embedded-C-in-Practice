@@ -12,3 +12,6 @@ The same behavior, with the machine written as a `static const` table of transit
 
 ### `03-driver-callbacks`
 The complete system. The button, console, and probe drivers no longer include `app/event_queue.h`: each one calls a function pointer registered by `main.c`, which publishes the event. The LED shows the state: off in `IDLE`, a one-second period in `MONITOR`, and a 250 ms period in `ALERT`. The processor still sleeps between events.
+
+### `03b-driver-callbacks`
+A worked first step of the exercise at the end of the callbacks section, with the same behavior as project 03. The vector name `TIM4_IRQHandler` moves from `drivers/button.c` into `hal/timer.c`. The HAL acknowledges the update interrupt and calls a callback that the driver registers with `timer_set_update_callback()`, so the button driver no longer contains any vector name for its debounce timer. The handlers for `EXTI15_10_IRQHandler`, `USART2_IRQHandler`, and `ADC_IRQHandler` are still in the drivers, and moving them the same way is the exercise.

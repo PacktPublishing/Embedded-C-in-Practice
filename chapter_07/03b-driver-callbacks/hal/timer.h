@@ -1,0 +1,61 @@
+#ifndef TIMER_H
+#define TIMER_H
+
+#include <stdbool.h>
+#include <stdint.h>
+
+typedef enum
+{
+    TIMER_2,
+    TIMER_3,
+    TIMER_4
+} timer_instance_t;
+
+typedef enum
+{
+    TIMER_MODE_PERIODIC,
+    TIMER_MODE_ONE_SHOT
+} timer_mode_t;
+
+typedef enum
+{
+    TIMER_OK = 0,
+    TIMER_ERROR_INVALID_ARG,
+    TIMER_ERROR_NOT_INITIALIZED
+} timer_status_t;
+
+typedef enum
+{
+    TIMER_CHANNEL_1 = 1,
+    TIMER_CHANNEL_2 = 2,
+    TIMER_CHANNEL_3 = 3,
+    TIMER_CHANNEL_4 = 4
+} timer_channel_t;
+
+typedef void (*timer_callback_t)(void);
+
+typedef struct
+{
+    timer_mode_t mode;
+    uint32_t tick_hz;
+    uint32_t period_ticks;
+} timer_config_t;
+
+timer_status_t timer_init(timer_instance_t instance,
+                          const timer_config_t *config);
+void timer_start(timer_instance_t instance);
+
+void timer_enable_update_interrupt(timer_instance_t instance,
+                                   uint8_t priority);
+void timer_set_update_callback(timer_instance_t instance,
+                               timer_callback_t callback);
+
+void timer_enable_trigger_output(timer_instance_t instance);
+
+void timer_configure_compare(timer_instance_t instance,
+                             timer_channel_t channel);
+void timer_set_compare(timer_instance_t instance,
+                       timer_channel_t channel, uint32_t value);
+uint32_t timer_get_period_ticks(timer_instance_t instance);
+
+#endif
