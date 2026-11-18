@@ -15,28 +15,3 @@ Adds a debug output on PB4, driven high right after the loop reads the tick coun
 ### `03-smoke-tests`
 
 Adds a set of self-checks that run on the real hardware and report a uniform verdict. Type `t` on the console to run all of them: the sensor check performs one reading, the probe check verifies that an analog sample has arrived and falls inside the range of the converter, the tick check verifies that the millisecond counter advances, and the queue check puts a known event into a local queue and takes it out again. Each result is logged as `PASS` or `FAIL`, so two runs can be compared at a glance after a change. The command joins the diagnostic commands of the previous chapter, `m` and `x`, in `handle_command()`, outside the state machine.
-
-## Console commands
-
-The commands available in all three projects:
-
-```text
-s        start monitoring
-e        stop monitoring
-0-9      fan speed, in alert only
-m        bytes of stack never used since reset
-x        force a stack overflow, to see the blink code
-t        run the smoke tests (03-smoke-tests only)
-```
-
-## Building
-
-Each project builds on its own:
-
-```text
-cd 01-log-timestamps
-make
-make flash
-```
-
-The serial terminal runs at 115200 baud.
