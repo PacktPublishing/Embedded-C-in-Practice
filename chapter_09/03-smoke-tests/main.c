@@ -285,7 +285,7 @@ int main(void)
 
     bme280_configure(&sensor, &sensor_config);
 
-    log_info("ready: s start, e stop, 0-9 fan, m stack, x test, t smoke, button stop");
+    log_info("ready: s start, e stop, 0-9 fan in alert, m stack, x test, t smoke, button stop");
 
     soft_timer_start(&report_timer, system_timer_get_ms());
 

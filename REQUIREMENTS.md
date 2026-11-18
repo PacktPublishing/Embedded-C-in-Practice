@@ -143,6 +143,28 @@ STM32_Programmer_CLI -c port=SWD
 
 ---
 
+## Debugging Tools
+
+Chapter 9 uses a command-line debugger to observe the running firmware.
+
+Required for that chapter:
+
+```text
+OpenOCD 0.12.0 or later
+arm-none-eabi-gdb
+```
+
+`arm-none-eabi-gdb` is part of the Arm GNU Toolchain. OpenOCD connects it to the on-board ST-LINK.
+
+Verify the installation:
+
+```bash
+openocd --version
+arm-none-eabi-gdb --version
+```
+
+---
+
 ## Hardware
 
 The examples in this book are developed and tested using the:

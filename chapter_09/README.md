@@ -10,7 +10,7 @@ The complete system from Chapter 8 with an extended log module. Every line now b
 
 ### `02-debug-pin`
 
-Adds a debug output on PB4, driven high as the first statement of the main loop and low just before the processor goes to sleep. With an oscilloscope or a logic analyzer on that pin, the width of a pulse is the duration of one loop pass, the gaps are the time the processor stays idle, and the wider pulse once per second is the cost of the periodic sensor reading, which includes the I2C transaction and one log line. Each edge is one write to `BSRR` through `gpio_write_pin()`, a handful of instructions, so the measurement disturbs the timing far less than a log line would. Move the two calls around any other region to measure it the same way.
+Adds a debug output on PB4, driven high right after the loop reads the tick counter and low just before the processor goes to sleep. With an oscilloscope or a logic analyzer on that pin, the width of a pulse is the duration of one loop pass, the gaps are the time spent outside the loop, asleep or serving interrupts, and the wider pulse once per second is the cost of the periodic sensor reading, which includes the I2C transaction and one log line. Each edge is one write to `BSRR` through `gpio_write_pin()`, a handful of instructions, so the measurement disturbs the timing far less than a log line would. Move the two calls around any other region to measure it the same way.
 
 ### `03-smoke-tests`
 
